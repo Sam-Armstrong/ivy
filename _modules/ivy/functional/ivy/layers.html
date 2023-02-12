@@ -96,6 +96,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../nested_array/nested_array.html">Nested array</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../testing/testing_helpers.html">Testing helpers</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
@@ -143,6 +154,7 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_array_function</span><span class="p">,</span>
     <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -162,6 +174,7 @@
 <div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../../functional/ivy/layers/linear/linear_functional.html#ivy.functional.ivy.layers.linear">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">linear</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">weight</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -307,6 +320,7 @@
 <div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../../functional/ivy/layers/dropout/dropout_functional.html#ivy.functional.ivy.layers.dropout">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -461,9 +475,10 @@
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">noise_shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">noise_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">noise_shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span>
         <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">1</span>
+        <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span>
     <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
@@ -476,6 +491,7 @@
 
 <div class="viewcode-block" id="scaled_dot_product_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/scaled_dot_product_attention/scaled_dot_product_attention_functional.html#ivy.functional.ivy.layers.scaled_dot_product_attention">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
     <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -680,6 +696,7 @@
 
 <div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../../functional/ivy/layers/multi_head_attention/multi_head_attention_functional.html#ivy.functional.ivy.layers.multi_head_attention">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -915,6 +932,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1008,6 +1026,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv1d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1068,6 +1087,7 @@
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv2d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1075,8 +1095,8 @@
     <span class="n">padding</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
-    <span class="n">dilations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+    <span class="n">dilations</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes a 2-D convolution given 4-D input x and filters arrays.</span>
@@ -1111,7 +1131,6 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
-
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1196,6 +1215,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1314,6 +1334,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">depthwise_conv2d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1451,6 +1472,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -1566,6 +1588,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1674,6 +1697,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv_general_dilated</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1752,6 +1776,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv_general_transpose</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1825,6 +1850,7 @@
 <div class="viewcode-block" id="conv"><a class="viewcode-back" href="../../../../functional/ivy/layers/conv.html#ivy.functional.ivy.layers.conv">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1928,6 +1954,7 @@
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like_without_promotion</span>
+<span class="nd">@handle_array_function</span>
 <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">init_h</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
