@@ -280,6 +280,11 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="../../../../overview/faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../overview/glossary.html">Glossary</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Compiling and Transpiling</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../../compiler/compiler.html">Graph Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../compiler/transpiler.html">Transpiler</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../../docs/functional/ivy/ivy.functional.ivy.activations.html">Activations</a></li>
@@ -2445,7 +2450,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_is_frontend_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">ivy_array</span>
-        <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span>
 
